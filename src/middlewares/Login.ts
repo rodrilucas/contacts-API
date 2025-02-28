@@ -3,14 +3,13 @@ import { CustomSessionData } from "../types/types";
 
 class Login {
   middleware(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (!(req.session as CustomSessionData).user) {
-        return res.status(401).json({ message: "Acesso não autorizado!" });
-      }
-      next();
-    } catch (error) {
-      return res.status(500).json({ message: "Erro interno no servidor" });
+    const session = (req.session as CustomSessionData).user;
+
+    if (session) {
+      return res.status(200).json({ message: "O usuário já está autenticado!" });
     }
+
+    next();
   }
 }
 

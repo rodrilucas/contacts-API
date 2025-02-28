@@ -14,7 +14,6 @@ class UsersController {
     }
 
     (req.session as CustomSessionData).user = user;
-
   }
 
   async login(req: Request, res: Response) {
@@ -29,12 +28,13 @@ class UsersController {
 
     (req.session as CustomSessionData).user = user;
 
-
     res.status(200).json({ message: "Usuário autenticado com sucesso!" });
   }
 
   status(req: Request, res: Response) {
-    if (!(req.session as CustomSessionData).user) {
+    const session = (req.session as CustomSessionData).user;
+
+    if (!session) {
       return res.status(401).json({ message: "Usuário não está autenticado!" });
     }
 
