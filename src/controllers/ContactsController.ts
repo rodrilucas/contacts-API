@@ -6,13 +6,9 @@ class ContactsController {
   async showContacts(req: Request<{}, {}, {}, { q: string }>, res: Response) {
     const user = (req.session as CustomSessionData).user;
 
-    if (!user || !user.id) {
-      return res.status(401).json({ message: "Usuário não autenticado" });
-    }
-
     const { q } = req.query;
 
-    const contacts = await ContactsService.contactsUser(user.id, q);
+    const contacts = await ContactsService.contactsUser(user?.id!, q);
 
     if (!contacts) {
       return res
@@ -44,33 +40,17 @@ class ContactsController {
   async create(req: Request, res: Response) {
     const data = req.body;
 
-    if (!Object.keys(data).length) {
-      return res
-        .status(400)
-        .json({ message: "Campos obrigatórios não fornecidos!" });
-    }
-
     const user = (req.session as CustomSessionData).user;
 
-    if (!user || !user.id) {
-      return res.status(401).json({ message: "Usuário não autenticado" });
-    }
+    await ContactsService.userExist(user?.id!);
 
-    await ContactsService.userExist(user.id);
-
-    const contact = await ContactsService.addContact(data, user.id);
+    const contact = await ContactsService.addContact(data, user?.id!);
 
     res.status(200).json(contact);
   }
 
   async edit(req: Request<{ id: string }, {}, Contact>, res: Response) {
     const data = req.body;
-
-    if (!data) {
-      return res
-        .status(400)
-        .json({ message: "Campos obrigatórios não fornecidos!" });
-    }
 
     const { id } = req.params;
 

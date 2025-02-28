@@ -6,12 +6,6 @@ class UsersController {
   async register(req: Request, res: Response) {
     const user = await UsersService.createUser(req.body);
 
-    if (!req.body) {
-      return res
-        .status(400)
-        .json({ message: "Campos obrigatórios não fornecidos" });
-    }
-
     if (!user) {
       res.status(500).json({
         message:
@@ -25,12 +19,6 @@ class UsersController {
 
   async login(req: Request, res: Response) {
     const { user_name, password } = req.body;
-
-    if (!user_name || !password) {
-      return res
-        .status(400)
-        .json({ message: "Campos obrigatórios não fornecidos" });
-    }
 
     const user = await UsersService.confirmLogin(user_name, password);
 
